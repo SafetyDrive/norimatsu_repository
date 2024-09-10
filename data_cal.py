@@ -1,30 +1,26 @@
 import csv
 import math
-import statistics  # •½‹Ï‚ğŒvZ‚·‚é‚½‚ß‚Ìƒ‰ƒCƒuƒ‰ƒŠ
+import statistics  # å¹³å‡ã‚’è¨ˆç®—ã™ã‚‹ãŸã‚ã®ãƒ©ã‚¤ãƒ–ãƒ©ãƒª
 
 
-filename = '---.csv'  # “Ç‚İ‚ŞCSVƒtƒ@ƒCƒ‹
+filename = '---.csv'  # èª­ã¿è¾¼ã‚€CSVãƒ•ã‚¡ã‚¤ãƒ«
 
-# Œ‹‰Ê‚ğŠi”[‚·‚é‚½‚ß‚ÌƒŠƒXƒg
 results = []
 
-# CSVƒtƒ@ƒCƒ‹‚ğŠJ‚¢‚Ä“Ç‚İ‚İ
+# CSVãƒ•ã‚¡ã‚¤ãƒ«ã‚’é–‹ã„ã¦èª­ã¿è¾¼ã¿
 with open(filename, encoding='utf8', newline='') as f:
     csvreader = csv.reader(f)
     
-    # Šes‚ğ“Ç‚İ‚İA”’l‚ÌŒvZ‚ğs‚¤
+    # å„è¡Œã‚’èª­ã¿è¾¼ã¿ã€æ•°å€¤ã®è¨ˆç®—ã‚’è¡Œã†
     for row in csvreader:
-        # —á‚Æ‚µ‚ÄAŠes‚Ì2‚Â–Ú‚Ì’l‚ğg‚¤ (•K—v‚É‰‚¶‚ÄƒCƒ“ƒfƒbƒNƒX‚ğ•ÏX)
-        value = float(row[1])  # ”’lƒf[ƒ^‚ğæ‚èo‚µ‚ÄfloatŒ^‚É•ÏŠ·
+
+
         
-        # “Á’è‚Ì®‚É‘ã“üi‚±‚±‚Å‚Í—á‚Æ‚µ‚Ä x^2 + 2x + 1j
-        result = value**2 + 2 * value + 1
-        
-        # Œ‹‰Ê‚ğƒŠƒXƒg‚É’Ç‰Á
+        # çµæœã‚’ãƒªã‚¹ãƒˆã«è¿½åŠ 
         results.append(result)
 
-# •½‹Ï‚ğŒvZ
+# å¹³å‡ã‚’è¨ˆç®—
 average_result = statistics.mean(results)
 
-# Œ‹‰Ê‚ğ•\¦
-print("ŒvZŒ‹‰Ê‚Ì•½‹Ï:", average_result)
+# çµæœã‚’è¡¨ç¤º
+print("è¨ˆç®—çµæœã®å¹³å‡:", average_result)
