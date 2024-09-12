@@ -7,7 +7,7 @@ com = serial.Serial("COM7", 9600)
 
 with open("test.csv", "a", newline='') as f:
     writer = csv.writer(f)
-    writer.writerow(["Timestamp", "acceleration", "co_x","co_y","co_z"])
+    writer.writerow(["ac_x","ac_y","ac_z"])
 
 while True:
     ## from Arduino date
@@ -15,9 +15,9 @@ while True:
 
     data = val.split(",")
 
-    if len(data) == 4:
+    if len(data) == 3:
         date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         
         with open("test.csv", "a", newline='') as f:
             writer = csv.writer(f)
-            writer.writerow([date, data[0], data[1], data[2], data[3]])
+            writer.writerow([date, data[0], data[1], data[2]])
