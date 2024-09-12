@@ -7,7 +7,7 @@ com = serial.Serial("COM7", 9600)
 
 with open("test.csv", "a", newline='') as f:
     writer = csv.writer(f)
-    writer.writerow(["ac_x","ac_y","ac_z"])
+    writer.writerow(["ax","ay","az"])
 
 while True:
     ## from Arduino date
