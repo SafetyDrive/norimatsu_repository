@@ -1,80 +1,96 @@
 import csv
 import math
-import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 
-filename = '---.csv'  # “Ç‚İ‚ŞCSVƒtƒ@ƒCƒ‹
-
+filename = '2024-09-17_exmple1.csv'  # èª­ã¿è¾¼ã‚€CSVãƒ•ã‚¡ã‚¤ãƒ«å…¼ãƒ‘ã‚¹ã®æŒ‡å®š
+data = []
 time = []
-a1_values = []
-a2_values = []
-a3_values = []
 dangerous_events = []
 
-# CSVƒtƒ@ƒCƒ‹‚ğŠJ‚¢‚Ä“Ç‚İ‚İ
-with open(filename, encoding='utf8', newline='') as f:
+with open(filename, encoding='utf-8-sig', newline='') as f:
     csvreader = csv.reader(f)
+    for row in csvreader:
+        # å¿…è¦ãªåˆ—ã®ãƒ‡ãƒ¼ã‚¿ã‚’æŠ½å‡ºï¼ˆä¾‹ã¨ã—ã¦1åˆ—ç›®ã¨2åˆ—ç›®ã¨3åˆ—ç›®ã‚’æŠ½å‡ºï¼‰
+        extracted_data = [row[0], row[1], row[2]]
+        data.append(extracted_data)
+
+    num_rows = len(data)
+    num_cols = len(data[0]) if num_rows > 0 else 0
+
+    # æŠ½å‡ºã—ãŸãƒ‡ãƒ¼ã‚¿ã‚’è¡¨ç¤º
+    print("æŠ½å‡ºã—ãŸãƒ‡ãƒ¼ã‚¿:", data)
+    print(f"ãƒ‡ãƒ¼ã‚¿ã®ç¯„å›²: {num_rows} è¡Œ, {num_cols} åˆ—")
+
+
+for i in range(1, num_rows):  # Pythonã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã¯0ã‹ã‚‰å§‹ã¾ã‚‹ã®ã§1ã‹ã‚‰é–‹å§‹
+    ax = float(data[i][0])
+    ay = float(data[i][1])
+    az = float(data[i][2])
     
-    # Šes‚ğ“Ç‚İ‚İA”’l‚ÌŒvZ‚ğs‚¤
-    for i, row in enumerate(csvreader):
-        ax = float(row[0])
-        ay = float(row[1])
-        az = float(row[2])
+    # æŠ½å‡ºã—ãŸãƒ‡ãƒ¼ã‚¿ã‚’è¡¨ç¤º
+    print(f"è¡Œ {i+1}: ax = {ax}, ay = {ay}, az = {az}")
+    
+    # è¨ˆç®—å¼éƒ¨åˆ†
+    A = math.sqrt(ax**2 + ay**2 + az**2)
+    g = 9.81
+    a1 = math.sqrt(max(A**2 - g**2, 0))
+    a2 = ay
+    a3 = math.sqrt(ax**2 + az**2)
 
-# ŒvZ®•”•ª
-        A = math.sqrt(ax**2 + ay**2 + az**2)
-        g = 9.81
-        a1 = math.sqrt(max(A**2 - g**2, 0))
-        a2 = ay
-        a3 = math.sqrt(ax**2 + az**2)
+# é–¾å€¤ã®å®šç¾©
+    aggressive_turn_threshold = 0.73 * g  # æ”»æ’ƒçš„ãªé‹è»¢ã®æ—‹å›åŠ é€Ÿé–¾å€¤
+    emergency_turn_threshold = 0.74 * g   # ç·Šæ€¥æ—‹å›é–¾å€¤
+    uturn_aggressive_threshold = 0.91 * g # æ”»æ’ƒçš„ãªé‹è»¢ã®Uã‚¿ãƒ¼ãƒ³é–¾å€¤
+    non_aggressive_turn_threshold = 0.3 * g # éæ”»æ’ƒçš„ãªé‹è»¢ã®æ—‹å›é–¾å€¤
+    uturn_non_aggressive_threshold = 0.56 * g # éæ”»æ’ƒçš„ãªé‹è»¢ã®Uã‚¿ãƒ¼ãƒ³é–¾å€¤
+    a_brake_threshold = 0.48 * g  # æ€¥åŠ é€Ÿãƒ»æ€¥æ¸›é€Ÿé–¾å€¤
 
-# è‡’l‚Ì’è‹`
-    aggressive_turn_threshold = 0.73 * g  # UŒ‚“I‚È‰^“]‚Ìù‰ñ‰Á‘¬è‡’l
-    emergency_turn_threshold = 0.74 * g   # ‹Ù‹}ù‰ñè‡’l
-    uturn_aggressive_threshold = 0.91 * g # UŒ‚“I‚È‰^“]‚ÌUƒ^[ƒ“è‡’l
-    non_aggressive_turn_threshold = 0.3 * g # ”ñUŒ‚“I‚È‰^“]‚Ìù‰ñè‡’l
-    uturn_non_aggressive_threshold = 0.56 * g # ”ñUŒ‚“I‚È‰^“]‚ÌUƒ^[ƒ“è‡’l
-    a_brake_threshold = 0.48 * g  # ‹}‰Á‘¬E‹}Œ¸‘¬è‡’l
-
-# è‡’l‚ÌŒvZ•”•ª
+# é–¾å€¤ã®è¨ˆç®—éƒ¨åˆ†
     if a3 > aggressive_turn_threshold:
-        dangerous_events.append((i, 'UŒ‚“I‚Èù‰ñ', a3))
+        dangerous_events.append((i, 'æ”»æ’ƒçš„ãªæ—‹å›', a3))
     elif a3 > emergency_turn_threshold:
-        dangerous_events.append((i, '‹Ù‹}ù‰ñ', a3))
+        dangerous_events.append((i, 'ç·Šæ€¥æ—‹å›', a3))
     elif a3 > non_aggressive_turn_threshold:
-        dangerous_events.append((i, '”ñUŒ‚“I‚Èù‰ñ', a3))
+        dangerous_events.append((i, 'éæ”»æ’ƒçš„ãªæ—‹å›', a3))
 
     if a3 > uturn_aggressive_threshold:
-        dangerous_events.append((i, 'UŒ‚“I‚ÈUƒ^[ƒ“', a3))
+        dangerous_events.append((i, 'æ”»æ’ƒçš„ãªUã‚¿ãƒ¼ãƒ³', a3))
     elif a3 > uturn_non_aggressive_threshold:
-        dangerous_events.append((i, '”ñUŒ‚“I‚ÈUƒ^[ƒ“', a3))
+        dangerous_events.append((i, 'éæ”»æ’ƒçš„ãªUã‚¿ãƒ¼ãƒ³', a3))
 
     if abs(a2) > a_brake_threshold:
         if a2 > 0:
-            dangerous_events.append((i, '‹}‰Á‘¬', a2))
+            dangerous_events.append((i, 'æ€¥åŠ é€Ÿ', a2))
         else:
-            dangerous_events.append((i, '‹}Œ¸‘¬', a2))
+            dangerous_events.append((i, 'æ€¥æ¸›é€Ÿ', a2))
 
-    time.append(i)
-    a1_values.append(a1)
-    a2_values.append(a2)
-    a3_values.append(a3)
-
-    print("ŒŸ’m‚³‚ê‚½ŠëŒ¯‰^“]:")
+    print("æ¤œçŸ¥ã•ã‚ŒãŸå±é™ºé‹è»¢:")
     for event in dangerous_events:
-        print(f": {event[0]} - ƒCƒxƒ“ƒg: {event[1]} - ’l: {event[2]:.2f} m/s^2")
+        print(f"æ™‚åˆ»: {event[0]} - ã‚¤ãƒ™ãƒ³ãƒˆ: {event[1]} - å€¤: {event[2]:.2f} m/s^2")
 
-    # ‰Á‘¬“x²‚Éƒvƒƒbƒg
+# ã‚°ãƒ©ãƒ•ã‚’ä½œæˆ
+    a1_list = []
+    a2_list = []
+    a3_list = []
+
     plt.figure(figsize=(10, 6))
 
-    plt.plot(time, a1_values, label='a1 (Lateral Acceleration)')
-    plt.plot(time, a2_values, label='a2 (Vertical Acceleration)')
-    plt.plot(time, a3_values, label='a3 (Longitudinal Acceleration)')
+    plt.plot(time, a1_list, label='a1 (Lateral Acceleration)')
+    plt.plot(time, a2_list, label='a2 (Vertical Acceleration)')
+    plt.plot(time, a3_list, label='a3 (Longitudinal Acceleration)')
 
     plt.xlabel('Time [t]')
     plt.ylabel('Acceleration [m/s^2]')
     plt.title('Acceleration vs Time')
     plt.legend()
     plt.grid(True)
+
+    def on_key(event):
+        if event.key == 'q':
+            plt.close(event.canvas.figure)
+
+    # ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ©ã‚’æ¥ç¶š
+    plt.gcf().canvas.mpl_connect('key_press_event', on_key)
 
     plt.show()
