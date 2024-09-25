@@ -1,28 +1,24 @@
 import csv
 import math
-import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-filename = '2024-09-17_exmple1.csv'  # 読み込むCSVファイル
+filename = '---.csv'  # ΗέήCSVt@C
 
 time = []
-a1_values = []
-a2_values = []
-a3_values = []
 dangerous_events = []
 
-# CSVファイルを開いて読み込み
+# CSVt@CπJ’ΔΗέέ
 with open(filename, encoding='utf8', newline='') as f:
     csvreader = csv.reader(f)
     
-    # 各行を読み込み、数値の計算を行う
+    # esπΗέέAlΜvZπs€
     for i, row in enumerate(csvreader):
         ax = float(row[0])
         ay = float(row[1])
         az = float(row[2])
 
-# 計算式部分
+# vZ�ͺ
         A = math.sqrt(ax**2 + ay**2 + az**2)
         g = 9.81
         a1 = math.sqrt(max(A**2 - g**2, 0))
@@ -54,7 +50,7 @@ with open(filename, encoding='utf8', newline='') as f:
         if a2 > 0:
             dangerous_events.append((i, '急加速', a2))
         else:
-            dangerous_events.append((i, '急減速', a2))
+            dangerous_events.append((i, '}Έ¬', a2))
 
     time.append(i)
     a1_values.append(a1)
@@ -65,17 +61,24 @@ with open(filename, encoding='utf8', newline='') as f:
     for event in dangerous_events:
         print(f"時刻: {event[0]} - イベント: {event[1]} - 値: {event[2]:.2f} m/s^2")
 
-    # 時刻加速度軸にプロット
+    # Α¬x²Ιvbg
     plt.figure(figsize=(10, 6))
 
-    plt.plot(time, a1_values, label='a1 (Lateral Acceleration)')
-    plt.plot(time, a2_values, label='a2 (Vertical Acceleration)')
-    plt.plot(time, a3_values, label='a3 (Longitudinal Acceleration)')
+    plt.plot(time, a1_list, label='a1 (Lateral Acceleration)')
+    plt.plot(time, a2_list, label='a2 (Vertical Acceleration)')
+    plt.plot(time, a3_list, label='a3 (Longitudinal Acceleration)')
 
     plt.xlabel('Time [t]')
     plt.ylabel('Acceleration [m/s^2]')
     plt.title('Acceleration vs Time')
     plt.legend()
     plt.grid(True)
+
+    def on_key(event):
+        if event.key == 'q':
+            plt.close(event.canvas.figure)
+
+    # イベントハンドラを接続
+    plt.gcf().canvas.mpl_connect('key_press_event', on_key)
 
     plt.show()
